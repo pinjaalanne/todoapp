@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import Swal from 'sweetalert2';
 import { IoIosCheckmarkCircle } from 'react-icons/io';
 import { MdDeleteForever } from 'react-icons/md';
 import { FiCircle } from 'react-icons/fi';
@@ -68,9 +68,27 @@ const App = () => {
 
   // Define a function to delete a todo
   const deleteTodo = (id) => {
-    let newTodos = todos.filter((todo) => todo.id !== id);
+    Swal.fire({
+      title: "Are you sure you want to delete?",
+      background: "white",
+      confirmButtonColor: '#38D08A',
+      showDenyButton: true,
+      confirmButtonText: 'Delete',
+      denyButtonText: 'Cancel',
+      customClass: {
+        title: 'title'
+      }
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        Swal.fire("Deleted!", "", "success");
+        let newTodos = todos.filter((todo) => todo.id !== id);
+        setStoredTodos([...newTodos]);
+      } else if (result.isDenied) {
+        Swal.fire("This to do was not deleted", "", "info");
+      }
+    });
     // Update the storedTodos using the setter function
-    setStoredTodos([...newTodos]);
   };
 
   // Define a function to toggle the completion status of a todo
